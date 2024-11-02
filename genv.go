@@ -1,7 +1,14 @@
+/*
+genv is a lightweight package to manage
+environment variables in Go programs
+
+Made by Ken Tabanay kentabanay@gmail.com
+*/
 package genv
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -11,15 +18,31 @@ import (
 )
 
 var (
-	genvDir      string // The directory in which the env file is located
-	genvPath     string // The path for the env file
-	EnvVariables = initEnvMap()
+	// An error that is returned when genv fails to write to the env file
+	errGenvWrite error = errors.New("failed to write to env file")
+
+	// An error that is returned when genv is given an invalid directory
+	errGenvInvalidDir error = errors.New("the provided directory is not valid")
+
+	// An error that is returned when genv fails to create a directory for itself
+	errGenvMkValidDir error = errors.New("failed to create the directory")
+
+	// An error that is returned when genv encounters a FilePath error
+	errGenvFilePathError error = errors.New("failed to write to env file at given path")
 )
 
+var (
+	genvDir      string         // The directory in which the env file is located
+	genvPath     string         // The path for the env file
+	EnvVariables = initEnvMap() // A map containing the environment variables during program execution
+)
+
+// Creates an map with string key value pairs
 func initEnvMap() map[string]string {
 	return make(map[string]string)
 }
 
+// Maps the following key with the corresponding value
 func addToEnvMap(key string, value string) {
 	EnvVariables[key] = value
 }
@@ -28,20 +51,27 @@ func CreateStringVar(key string, value string) {
 	addToEnvMap(key, value)
 }
 
+// Converts the given int value to a string before adding to the map using strconv.Itoa()
 func CreateIntVar(key string, value int) {
 	valueString := strconv.Itoa(value)
 	addToEnvMap(key, valueString)
 }
 
+// Converts the given float64 value into a string before adding to the map.
+// The float64 is converted into a string with no exponents and will use the smallest amount of
+// number of digits such that ParseFloat will return the float exactly.
 func CreateFloatVar(key string, value float64) {
 	valueString := strconv.FormatFloat(value, 'f', -1, 64)
 	addToEnvMap(key, valueString)
 }
 
+// From the map retrieves the following key and returns its associated value.
 func GetVar(key string) (value string) {
 	return EnvVariables[key]
 }
 
+// Saves all the key value pairs contained in the EnvVariables map and writes them to the corresponding
+// file with the app name defined during the genv Init() process.
 func Save() error {
 	if genvDir == "" || genvPath == "" {
 		return fmt.Errorf("can't save because genvDir or genvPath is empty")
@@ -71,7 +101,7 @@ func Save() error {
 	for _, line := range lines {
 		_, err := file.WriteString(line)
 		if err != nil {
-			return fmt.Errorf("something went wrong with writing to file, %s", err)
+			return errGenvWrite
 		}
 	}
 
@@ -108,7 +138,7 @@ func Load(appName string, dir ...string) error {
 	})
 
 	if err != nil {
-		return err
+		return errGenvInvalidDir
 	}
 
 	genvPath = filepath.Join(genvDir, "."+appName+".env")
