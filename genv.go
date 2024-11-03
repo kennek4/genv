@@ -101,7 +101,7 @@ func Save() error {
 	for _, line := range lines {
 		_, err := file.WriteString(line)
 		if err != nil {
-			return errGenvWrite
+			return ErrGenvWrite
 		}
 	}
 
@@ -138,7 +138,7 @@ func Load(appName string, dir ...string) error {
 	})
 
 	if err != nil {
-		return errGenvInvalidDir
+		return ErrGenvInvalidDir
 	}
 
 	genvPath = filepath.Join(genvDir, "."+appName+".env")

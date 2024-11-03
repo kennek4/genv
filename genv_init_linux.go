@@ -28,7 +28,7 @@ func Init(appName string, dir ...string) error {
 	case 1: // Use given dir
 		path, err := os.Stat(dir[0])
 		if err != nil || !path.IsDir() || os.IsNotExist(err) {
-			return errGenvInvalidDir
+			return ErrGenvInvalidDir
 		}
 
 		baseDir = dir[0]
@@ -42,7 +42,7 @@ func Init(appName string, dir ...string) error {
 
 	err := os.Mkdir(genvDir, 0777)
 	if err != nil {
-		return errGenvMkValidDir
+		return ErrGenvMkValidDir
 	}
 
 	genvFile := fmt.Sprintf(".%s.env", appName)
@@ -50,7 +50,7 @@ func Init(appName string, dir ...string) error {
 
 	err = os.WriteFile(genvPath, nil, 0777)
 	if err != nil {
-		return errGenvFilePathError
+		return ErrGenvFilePathError
 	}
 
 	return nil // genv created successfully
