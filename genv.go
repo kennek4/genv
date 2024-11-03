@@ -19,16 +19,16 @@ import (
 
 var (
 	// An error that is returned when genv fails to write to the env file
-	errGenvWrite error = errors.New("failed to write to env file")
+	ErrGenvWrite error = errors.New("failed to write to env file")
 
 	// An error that is returned when genv is given an invalid directory
-	errGenvInvalidDir error = errors.New("the provided directory is not valid")
+	ErrGenvInvalidDir error = errors.New("the provided directory is not valid")
 
 	// An error that is returned when genv fails to create a directory for itself
-	errGenvMkValidDir error = errors.New("failed to create the directory")
+	ErrGenvMkValidDir error = errors.New("failed to create the directory")
 
 	// An error that is returned when genv encounters a FilePath error
-	errGenvFilePathError error = errors.New("failed to write to env file at given path")
+	ErrGenvFilePathError error = errors.New("failed to write to env file at given path")
 )
 
 var (
