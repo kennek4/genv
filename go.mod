@@ -3,7 +3,5 @@ module github.com/kennek4/genv
 go 1.23.2
 
 retract (
-	v0.1.0
-	v0.1.1
-	v0.1.2
+	[v0.1.0, v0.1.3]
 )

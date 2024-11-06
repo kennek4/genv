@@ -21,7 +21,7 @@ func Init(appName string, dir ...string) error {
 	case 0: // Use default dir
 		home, err := os.UserHomeDir()
 		if err != nil {
-			return ErrGenvFilePathError 
+			return ErrGenvFilePathError
 		}
 		baseDir = home
 
